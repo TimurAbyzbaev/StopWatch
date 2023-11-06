@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
@@ -48,25 +47,26 @@ class MainActivityAdapter(
     {
         fun bind(timer: TimerModel) {
             timer.startCollect()
-            timer.subscribe().observe(context as LifecycleOwner) {
+            timer.subscribeToValue().observe(context as LifecycleOwner) {
                 itemView.findViewById<TextView>(R.id.text_time).text = it
             }
-            itemView.findViewById<TextView>(R.id.text_time).text = timer.subscribe().value
+            itemView.findViewById<TextView>(R.id.text_time).text = timer.subscribeToValue().value
 
             itemView.findViewById<TextView>(R.id.timer_name).text = timer.name
 
             itemView.findViewById<ImageButton>(R.id.button_start).setOnClickListener {
-                timer.startClicked()
+                if(!timer.started){
+                    itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_pause_circle_outline_24)
+                    timer.startClicked()
+                } else {
+                    itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_play_circle_outline_24)
+                    timer.pauseClicked()
+                }
             }
 
             itemView.findViewById<ImageButton>(R.id.button_stop).setOnClickListener {
                 timer.stopClicked()
             }
-
-            itemView.findViewById<ImageButton>(R.id.button_pause).setOnClickListener {
-                timer.pauseClicked()
-            }
-
         }
 
     }

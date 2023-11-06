@@ -11,6 +11,8 @@ class TimerModel(
     var name: String = "Timer"
 ) : BaseViewModel() {
     private val liveDataForViewToObserve: LiveData<String> = _mutableLiveData
+    var started = false
+        private set
 
     private val timestampProvider = object : TimestampProvider {
         override fun getMilliseconds(): Long {
@@ -27,7 +29,7 @@ class TimerModel(
         CoroutineScope(Dispatchers.Main + SupervisorJob())
     )
 
-    fun subscribe(): LiveData<String> {
+    fun subscribeToValue(): LiveData<String> {
         return liveDataForViewToObserve
     }
 
@@ -41,13 +43,16 @@ class TimerModel(
 
     fun startClicked() {
         stopwatchListOrchestrator.start()
+        started = true
     }
 
     fun pauseClicked() {
         stopwatchListOrchestrator.pause()
+        started = false
     }
 
     fun stopClicked() {
         stopwatchListOrchestrator.stop()
+        started = false
     }
 }

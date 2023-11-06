@@ -1,6 +1,7 @@
 package com.example.stopwatch.view
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private val adapter = MainActivityAdapter(::setPosition)
     private val timers = mutableListOf<TimerModel>()
     var currentPosition = 0
+
 
     private fun setPosition(position: Int) {
         currentPosition = position

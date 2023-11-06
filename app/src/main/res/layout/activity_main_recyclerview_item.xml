@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/timer"
+    android:layout_margin="@dimen/margin_medium"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/name_of_timer"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -21,9 +22,10 @@
         android:layout_height="wrap_content"
         android:text="@string/default_time"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="25sp"
         app:layout_constraintTop_toBottomOf="@+id/timer_name"
         app:layout_constraintStart_toStartOf="parent"/>
+
     <ImageButton
         android:id="@+id/button_start"
         android:layout_width="wrap_content"
@@ -31,19 +33,10 @@
         android:src="@drawable/baseline_play_circle_outline_24"
         android:background="@null"
         android:contentDescription="@string/play_button_description"
-        app:layout_constraintEnd_toStartOf="@+id/button_pause"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-    <ImageButton
-        android:id="@+id/button_pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/baseline_pause_circle_outline_24"
-        android:contentDescription="@string/pause_button_description"
         app:layout_constraintEnd_toStartOf="@+id/button_stop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
     <ImageButton
         android:id="@+id/button_stop"
         android:layout_width="wrap_content"
