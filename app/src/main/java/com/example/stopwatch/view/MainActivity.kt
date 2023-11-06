@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        timers.add(TimerModel())
+        timers.add(TimerModel("Work"))
         adapter.setData(timers)
         binding.mainActivityRecyclerview.adapter = adapter
 

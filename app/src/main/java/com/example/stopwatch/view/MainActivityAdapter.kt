@@ -65,6 +65,7 @@ class MainActivityAdapter(
             }
 
             itemView.findViewById<ImageButton>(R.id.button_stop).setOnClickListener {
+                itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_play_circle_outline_24)
                 timer.stopClicked()
             }
         }
