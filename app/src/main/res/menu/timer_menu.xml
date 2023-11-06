@@ -8,5 +8,8 @@
     <item
         android:id="@+id/remove_timer"
         android:title="@string/remove_timer"/>
+    <item
+        android:id="@+id/rename_timer"
+        android:title="@string/rename_timer"/>
 
 </menu>

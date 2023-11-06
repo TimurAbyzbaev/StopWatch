@@ -7,7 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class MainActivityViewModel : BaseViewModel() {
+class TimerModel(
+    var name: String = "Timer"
+) : BaseViewModel() {
     private val liveDataForViewToObserve: LiveData<String> = _mutableLiveData
 
     private val timestampProvider = object : TimestampProvider {

@@ -2,4 +2,13 @@
     <string name="app_name">StopWatch</string>
     <string name="add_timer">Add timer</string>
     <string name="remove_timer">Remove timer</string>
+    <string name="stop_button_description">Button stop</string>
+    <string name="pause_button_description">Pause button</string>
+    <string name="play_button_description">Play button</string>
+    <string name="name_of_timer">Name of timer</string>
+    <string name="default_time">00:00:00</string>
+    <string name="rename_timer">Rename timer</string>
+    <string name="button_rename">Rename</string>
+    <string name="timer_name_hint">Timer name</string>
+    <string name="delete_description">Delete description\n</string>
 </resources>

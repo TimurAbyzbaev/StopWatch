@@ -5,30 +5,30 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stopwatch.R
 import com.example.stopwatch.databinding.ActivityMainBinding
-import com.example.stopwatch.viewmodel.MainActivityViewModel
+import com.example.stopwatch.view.dialogInput.RenameDialogInput
+import com.example.stopwatch.viewmodel.TimerModel
 
+private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = MainActivityAdapter(::setPosition)
-    val viewModels = mutableListOf<MainActivityViewModel>()
+    private val timers = mutableListOf<TimerModel>()
     var currentPosition = 0
 
-    private fun setPosition(position: Int){
+    private fun setPosition(position: Int) {
         currentPosition = position
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //initViewModel()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModels.add(MainActivityViewModel())
-        adapter.setData(viewModels)
+        timers.add(TimerModel())
+        adapter.setData(timers)
         binding.mainActivityRecyclerview.adapter = adapter
 
         registerForContextMenu(binding.mainActivityRecyclerview)
@@ -40,12 +40,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.add_timer -> {
-                viewModels.add(MainActivityViewModel())
-                adapter.setData(viewModels)
+                timers.add(TimerModel())
+                adapter.setData(timers)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -56,26 +57,46 @@ class MainActivity : AppCompatActivity() {
         menuInfo: ContextMenu.ContextMenuInfo?
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        if(v?.id == R.id.main_activity_recyclerview){
+        if (v?.id == R.id.main_activity_recyclerview) {
             menuInflater.inflate(R.menu.timer_menu, menu)
         }
 
     }
+
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.add_timer -> {
-                viewModels.add(MainActivityViewModel())
-                adapter.setData(viewModels)
+                timers.add(TimerModel("New Timer"))
+                adapter.setData(timers)
             }
+
             R.id.remove_timer -> {
+                val currentTimer = timers.get(currentPosition)
+                currentTimer.stopClicked()
                 deleteItemFromList(currentPosition)
+            }
+            R.id.rename_timer -> {
+                renameTimer()
             }
         }
         return super.onContextItemSelected(item)
     }
 
-    private fun deleteItemFromList(position: Int){
-        viewModels.removeAt(position)
-        adapter.setData(viewModels)
+    private fun deleteItemFromList(position: Int) {
+        timers.removeAt(position)
+        adapter.setData(timers)
     }
+    private fun renameTimer() {
+        val renameDialogFragment = RenameDialogInput.newInstance()
+        renameDialogFragment.setOnSearchClickListener(onRenameClickListener)
+        renameDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
+    }
+
+    private val onRenameClickListener: RenameDialogInput.OnRenameClickListener =
+        object : RenameDialogInput.OnRenameClickListener {
+            override fun onClick(newTimerName: String) {
+                timers[currentPosition].name = newTimerName
+                adapter.notifyDataSetChanged()
+            }
+        }
 }
