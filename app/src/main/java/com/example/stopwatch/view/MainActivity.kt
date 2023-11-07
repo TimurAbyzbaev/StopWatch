@@ -5,9 +5,11 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.example.stopwatch.R
 import com.example.stopwatch.databinding.ActivityMainBinding
 import com.example.stopwatch.view.dialogInput.RenameDialogInput
@@ -19,10 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = MainActivityAdapter(::setPosition)
-    //private var timers = mutableListOf<TimerModel>()
     var currentPosition = 0
     private val viewModel: MainActivityViewModel by lazy {
-        ViewModelProvider(this)[MainActivityViewModel::class.java]
+        ViewModelProvider(this).get(MainActivityViewModel::class.java)
     }
 
 
@@ -34,15 +35,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        //viewModel = ViewModelProvider(this).get(com.example.stopwatch.viewmodel.MainActivityViewModel::class.java)
         binding.mainActivityRecyclerview.adapter = adapter
 
         registerForContextMenu(binding.mainActivityRecyclerview)
 
-        //timers.add(TimerModel("Work"))
-
-
-        viewModel.subscribeToLiveData().observe(this) { adapter.setData(it) }
+        viewModel.subscribeToLiveData().observe(this, Observer {
+            Toast.makeText(applicationContext, "Here", Toast.LENGTH_SHORT).show()
+            adapter.setData(it)
+        })
+        //viewModel.subscribeToLiveData().observe(this) { setTimers(it) }
 //        viewModel.subscribeToLiveData().observe(this) {
 //            onChange(it)
 //        }
@@ -50,10 +52,15 @@ class MainActivity : AppCompatActivity() {
         //adapter.setData(timers)
     }
 
-    private fun onChange(timers: MutableList<TimerModel>) {
-        adapter.setData(timers)
-        adapter
+    override fun onDestroy() {
+        viewModel.subscribeToLiveData().removeObservers(this)
+        super.onDestroy()
     }
+
+//    private fun onChange(timers: MutableList<TimerModel>) {
+//        adapter.setData(timers)
+//        adapter
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -90,6 +97,7 @@ class MainActivity : AppCompatActivity() {
             R.id.add_timer -> {
                 //timers.add(TimerModel("New Timer"))
                 viewModel.addTimer()
+                adapter.notifyDataSetChanged()
                 //adapter.setData(timers)
             }
 

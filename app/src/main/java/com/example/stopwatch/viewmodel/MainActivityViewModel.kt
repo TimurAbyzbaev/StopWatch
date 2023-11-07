@@ -11,11 +11,14 @@ class MainActivityViewModel(
     private val _liveData = MutableLiveData<MutableList<TimerModel>>()
     private val liveData: LiveData<MutableList<TimerModel>> = _liveData
 
-    fun subscribeToLiveData() = liveData
+    fun subscribeToLiveData(): LiveData<MutableList<TimerModel>> {
+        _liveData.value = timers
+        return liveData
+    }
 
     fun addTimer(name: String = "New Timer") {
-        _liveData.value?.add(TimerModel(name))
-        //timers.add(TimerModel(name))
+        //_liveData.value?.add(TimerModel(name))
+        timers.add(TimerModel(name))
     }
 
     fun removeTimer(index: Int) {
