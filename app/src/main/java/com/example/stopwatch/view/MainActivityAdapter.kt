@@ -17,8 +17,8 @@ class MainActivityAdapter(
     private lateinit var context: Context
     private var timers: List<TimerModel> = arrayListOf()
 
-    fun setData(viewModels: List<TimerModel>) {
-        this.timers = viewModels
+    fun setData(timers: List<TimerModel>) {
+        this.timers = timers
         notifyDataSetChanged()
     }
 
@@ -46,30 +46,45 @@ class MainActivityAdapter(
         RecyclerView.ViewHolder(view)//, View.OnCreateContextMenuListener
     {
         fun bind(timer: TimerModel) {
+            val buttonStart = itemView.findViewById<ImageButton>(R.id.button_start)
+            val buttonStop = itemView.findViewById<ImageButton>(R.id.button_stop)
+            val timerValueTextView = itemView.findViewById<TextView>(R.id.text_time)
+            val timerNameTextView = itemView.findViewById<TextView>(R.id.timer_name)
+            updateImageOnImageButton(buttonStart, timer.started)
+
             timer.startCollect()
             timer.subscribeToValue().observe(context as LifecycleOwner) {
-                itemView.findViewById<TextView>(R.id.text_time).text = it
+               timerValueTextView.text = it
             }
-            itemView.findViewById<TextView>(R.id.text_time).text = timer.subscribeToValue().value
 
-            itemView.findViewById<TextView>(R.id.timer_name).text = timer.name
+            timerValueTextView.text = timer.subscribeToValue().value
+            timerNameTextView.text = timer.name
 
-            itemView.findViewById<ImageButton>(R.id.button_start).setOnClickListener {
+            buttonStart.setOnClickListener{
                 if(!timer.started){
-                    itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_pause_circle_outline_24)
                     timer.startClicked()
                 } else {
-                    itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_play_circle_outline_24)
                     timer.pauseClicked()
                 }
-            }
 
-            itemView.findViewById<ImageButton>(R.id.button_stop).setOnClickListener {
-                itemView.findViewById<ImageButton>(R.id.button_start).setImageResource(R.drawable.baseline_play_circle_outline_24)
+                updateImageOnImageButton(buttonStart, timer.started)
+
+            }
+            buttonStop.setOnClickListener {
                 timer.stopClicked()
+                updateImageOnImageButton(buttonStart, timer.started)
             }
         }
+    }
 
+    private fun updateImageOnImageButton(button: ImageButton, started: Boolean) {
+        if(started){
+            button.setImageResource(R.drawable.baseline_pause_circle_outline_24)
+
+        } else {
+            button.setImageResource(R.drawable.baseline_play_circle_outline_24)
+
+        }
     }
 
     private fun setPosition(pos: Int) {

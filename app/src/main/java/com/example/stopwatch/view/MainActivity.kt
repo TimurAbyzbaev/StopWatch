@@ -1,24 +1,29 @@
 package com.example.stopwatch.view
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.stopwatch.R
 import com.example.stopwatch.databinding.ActivityMainBinding
 import com.example.stopwatch.view.dialogInput.RenameDialogInput
-import com.example.stopwatch.viewmodel.TimerModel
+import com.example.stopwatch.viewmodel.MainActivityViewModel
 
 private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = MainActivityAdapter(::setPosition)
-    private val timers = mutableListOf<TimerModel>()
     var currentPosition = 0
+    private val viewModel: MainActivityViewModel by lazy {
+        ViewModelProvider(this).get(MainActivityViewModel::class.java)
+    }
 
 
     private fun setPosition(position: Int) {
@@ -29,11 +34,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        timers.add(TimerModel("Work"))
-        adapter.setData(timers)
+        //viewModel = ViewModelProvider(this).get(com.example.stopwatch.viewmodel.MainActivityViewModel::class.java)
         binding.mainActivityRecyclerview.adapter = adapter
 
         registerForContextMenu(binding.mainActivityRecyclerview)
+
+        viewModel.subscribeToLiveData().observe(this, Observer {
+            Toast.makeText(applicationContext, "Adapter update", Toast.LENGTH_SHORT).show()
+            adapter.setData(it)
+        })
+    }
+
+    override fun onDestroy() {
+        viewModel.subscribeToLiveData().removeObservers(this)
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,11 +58,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add_timer -> {
-                timers.add(TimerModel())
-                adapter.setData(timers)
+                viewModel.addTimer()
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -68,14 +80,11 @@ class MainActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_timer -> {
-                timers.add(TimerModel("New Timer"))
-                adapter.setData(timers)
+                viewModel.addTimer()
             }
-
             R.id.remove_timer -> {
-                val currentTimer = timers.get(currentPosition)
-                currentTimer.stopClicked()
-                deleteItemFromList(currentPosition)
+                viewModel.removeTimer(currentPosition, this)
+
             }
             R.id.rename_timer -> {
                 renameTimer()
@@ -84,10 +93,6 @@ class MainActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
-    private fun deleteItemFromList(position: Int) {
-        timers.removeAt(position)
-        adapter.setData(timers)
-    }
     private fun renameTimer() {
         val renameDialogFragment = RenameDialogInput.newInstance()
         renameDialogFragment.setOnSearchClickListener(onRenameClickListener)
@@ -97,8 +102,7 @@ class MainActivity : AppCompatActivity() {
     private val onRenameClickListener: RenameDialogInput.OnRenameClickListener =
         object : RenameDialogInput.OnRenameClickListener {
             override fun onClick(newTimerName: String) {
-                timers[currentPosition].name = newTimerName
-                adapter.notifyDataSetChanged()
+                viewModel.renameTimer(currentPosition, newTimerName)
             }
         }
 }
