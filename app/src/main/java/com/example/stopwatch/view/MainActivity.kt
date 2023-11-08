@@ -9,14 +9,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.example.stopwatch.R
 import com.example.stopwatch.databinding.ActivityMainBinding
 import com.example.stopwatch.view.dialogInput.RenameDialogInput
 import com.example.stopwatch.viewmodel.MainActivityViewModel
-import com.example.stopwatch.viewmodel.TimerModel
 
 private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -41,26 +40,15 @@ class MainActivity : AppCompatActivity() {
         registerForContextMenu(binding.mainActivityRecyclerview)
 
         viewModel.subscribeToLiveData().observe(this, Observer {
-            Toast.makeText(applicationContext, "Here", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Adapter update", Toast.LENGTH_SHORT).show()
             adapter.setData(it)
         })
-        //viewModel.subscribeToLiveData().observe(this) { setTimers(it) }
-//        viewModel.subscribeToLiveData().observe(this) {
-//            onChange(it)
-//        }
-
-        //adapter.setData(timers)
     }
 
     override fun onDestroy() {
         viewModel.subscribeToLiveData().removeObservers(this)
         super.onDestroy()
     }
-
-//    private fun onChange(timers: MutableList<TimerModel>) {
-//        adapter.setData(timers)
-//        adapter
-//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -71,11 +59,8 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.add_timer -> {
                 viewModel.addTimer()
-                //timers.add(TimerModel())
-               // adapter.setData(timers)
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -95,16 +80,11 @@ class MainActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_timer -> {
-                //timers.add(TimerModel("New Timer"))
                 viewModel.addTimer()
-                adapter.notifyDataSetChanged()
-                //adapter.setData(timers)
             }
-
             R.id.remove_timer -> {
-                //val currentTimer = timers.get(currentPosition)
-                //currentTimer.stopClicked()
-                //deleteItemFromList(currentPosition)
+                viewModel.removeTimer(currentPosition, this)
+
             }
             R.id.rename_timer -> {
                 renameTimer()
@@ -113,11 +93,6 @@ class MainActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
-    private fun deleteItemFromList(index: Int) {
-        //timers.removeAt(position)
-        viewModel.removeTimer(index)
-        //adapter.setData(timers)
-    }
     private fun renameTimer() {
         val renameDialogFragment = RenameDialogInput.newInstance()
         renameDialogFragment.setOnSearchClickListener(onRenameClickListener)
@@ -127,9 +102,7 @@ class MainActivity : AppCompatActivity() {
     private val onRenameClickListener: RenameDialogInput.OnRenameClickListener =
         object : RenameDialogInput.OnRenameClickListener {
             override fun onClick(newTimerName: String) {
-                //timers[currentPosition].name = newTimerName
                 viewModel.renameTimer(currentPosition, newTimerName)
-                adapter.notifyDataSetChanged()
             }
         }
 }
