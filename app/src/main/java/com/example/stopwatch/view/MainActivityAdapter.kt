@@ -62,6 +62,10 @@ class MainActivityAdapter(
 
             buttonStart.setOnClickListener {
                 if (!timer.started) {
+                    for (timer in timers) {
+                        timer.pauseClicked()
+                        notifyDataSetChanged()
+                    }
                     timer.startClicked()
                 } else {
                     timer.pauseClicked()
