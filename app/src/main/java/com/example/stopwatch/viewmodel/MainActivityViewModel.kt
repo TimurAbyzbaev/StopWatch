@@ -25,9 +25,8 @@ class MainActivityViewModel(
 
     fun removeTimer(index: Int, owner: LifecycleOwner) {
         timers[index].stopClicked()
-        timers.remove(timers[index])
         timers[index].subscribeToValue().removeObservers(owner)
-        //timers.removeAt(index)
+        timers.remove(timers[index])
         _liveData.value = timers
     }
 

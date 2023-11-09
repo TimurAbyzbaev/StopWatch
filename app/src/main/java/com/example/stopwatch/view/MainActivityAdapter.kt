@@ -43,8 +43,7 @@ class MainActivityAdapter(
 
 
     inner class RecyclerItemViewHolder(view: View) :
-        RecyclerView.ViewHolder(view)//, View.OnCreateContextMenuListener
-    {
+        RecyclerView.ViewHolder(view) {
         fun bind(timer: TimerModel) {
             val buttonStart = itemView.findViewById<ImageButton>(R.id.button_start)
             val buttonStop = itemView.findViewById<ImageButton>(R.id.button_stop)
@@ -52,16 +51,17 @@ class MainActivityAdapter(
             val timerNameTextView = itemView.findViewById<TextView>(R.id.timer_name)
             updateImageOnImageButton(buttonStart, timer.started)
 
-            timer.startCollect()
-            timer.subscribeToValue().observe(context as LifecycleOwner) {
-               timerValueTextView.text = it
-            }
+            timer.subscribeToValue().removeObservers(context as LifecycleOwner)
 
-            timerValueTextView.text = timer.subscribeToValue().value
+            timer.startCollect()
+
+            timer.subscribeToValue().observe(context as LifecycleOwner) {
+                timerValueTextView.text = it
+            }
             timerNameTextView.text = timer.name
 
-            buttonStart.setOnClickListener{
-                if(!timer.started){
+            buttonStart.setOnClickListener {
+                if (!timer.started) {
                     timer.startClicked()
                 } else {
                     timer.pauseClicked()
@@ -78,7 +78,7 @@ class MainActivityAdapter(
     }
 
     private fun updateImageOnImageButton(button: ImageButton, started: Boolean) {
-        if(started){
+        if (started) {
             button.setImageResource(R.drawable.baseline_pause_circle_outline_24)
 
         } else {
