@@ -3,9 +3,10 @@ package com.example.stopwatch.model
 class StopwatchStateHolder(
     private val stopwatchStateCalculator: StopwatchStateCalculator,
     private val elapsedTimeCalculator: ElapsedTimeCalculator,
-    private val timestampMillisecondsFormatter: TimestampMillisecondsFormatter
+    private val timestampMillisecondsFormatter: TimestampMillisecondsFormatter,
+    private val elapsedTime: Long = 0L
 ) {
-    var currentState: StopwatchState = StopwatchState.Paused(0)
+    var currentState: StopwatchState = StopwatchState.Paused(elapsedTime)
         private set
 
     fun start() {

@@ -87,12 +87,10 @@ class MainActivityAdapter(
 
         } else {
             button.setImageResource(R.drawable.baseline_play_circle_outline_24)
-
         }
     }
 
     private fun setPosition(pos: Int) {
         position(pos)
     }
-
 }

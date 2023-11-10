@@ -8,11 +8,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class TimerModel(
-    var name: String = "Timer"
+    var name: String = "Timer",
+    var value: Long = 0L
 ) : BaseViewModel() {
+    init {
+        val timestampMillisecondsFormatter = TimestampMillisecondsFormatter()
+        _mutableLiveData.value = timestampMillisecondsFormatter.format(value)
+    }
     private val liveDataForViewToObserve: LiveData<String> = _mutableLiveData
     var started = false
         private set
+
 
     private val timestampProvider = object : TimestampProvider {
         override fun getMilliseconds(): Long {
@@ -24,7 +30,8 @@ class TimerModel(
         stopwatchStateHolder = StopwatchStateHolder(
             StopwatchStateCalculator(timestampProvider, ElapsedTimeCalculator(timestampProvider)),
             ElapsedTimeCalculator(timestampProvider),
-            TimestampMillisecondsFormatter()
+            TimestampMillisecondsFormatter(),
+            value
         ),
         CoroutineScope(Dispatchers.Main + SupervisorJob())
     )

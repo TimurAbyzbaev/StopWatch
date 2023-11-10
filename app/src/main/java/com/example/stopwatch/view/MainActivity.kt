@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //viewModel = ViewModelProvider(this).get(com.example.stopwatch.viewmodel.MainActivityViewModel::class.java)
         binding.mainActivityRecyclerview.adapter = adapter
 
         registerForContextMenu(binding.mainActivityRecyclerview)

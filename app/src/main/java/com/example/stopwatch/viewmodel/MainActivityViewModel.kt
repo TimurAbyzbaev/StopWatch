@@ -6,11 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainActivityViewModel(
+    /**
+     * Где-то тут надо подгрузку таймеров из ROOM сделать со стартовыми значениями таймера
+     */
     private val timers: MutableList<TimerModel> = mutableListOf(
         TimerModel("Work"),
         TimerModel("Coffee"),
         TimerModel("Smoke"),
-        TimerModel("Programming"))
+        TimerModel("Programming")
+    )
 ) : ViewModel() {
 
     private val _liveData = MutableLiveData<MutableList<TimerModel>>()
