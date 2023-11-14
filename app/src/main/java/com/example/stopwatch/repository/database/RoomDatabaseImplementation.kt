@@ -22,33 +22,40 @@ class RoomDatabaseImplementation(private val timersDao: TimersDao) :
         timersDao.insertAll(timersEntityList)
     }
 
-    override suspend fun updateTimer(timer: TimerModel) {
+    override suspend fun saveToDB(timer: TimerModel) {
+        timersDao.insert(convertTimerModelToTimerEntity(timer))
+    }
 
-        timersDao.update(TimersEntity(timer.name, 0L))
+    override suspend fun updateTimer(timer: TimerModel) {
+        timersDao.update(convertTimerModelToTimerEntity(timer))
+    }
+
+    override suspend fun deleteTimer(timer: TimerModel) {
+        timersDao.delete(convertTimerModelToTimerEntity(timer))
     }
 
     private fun convertTimerModelListToTimerEntityList(timers: List<TimerModel>): List<TimersEntity> {
         val timerEntityList = mutableListOf<TimersEntity>()
         for(timer in timers) {
-            timerEntityList.add(TimersEntity(timer.name, 0L))
+            timerEntityList.add(convertTimerModelToTimerEntity(timer))
         }
         return timerEntityList
     }
 
     private fun convertTimerEntityToTimerModel(timersEntity: TimersEntity) : TimerModel {
-        return TimerModel(timersEntity.timerName)
+        return TimerModel(timersEntity.id, timersEntity.timerName, timersEntity.timerValue)
     }
 
     private fun convertTimersEntityListToTimerModelList(timerEntityList: List<TimersEntity>) : List<TimerModel> {
         val timerModelList = mutableListOf<TimerModel>()
         for(timerEntity in timerEntityList) {
-            timerModelList.add(TimerModel(timerEntity.timerName))
+            timerModelList.add(TimerModel(timerEntity.id, timerEntity.timerName, timerEntity.timerValue))
         }
         return timerModelList
     }
 
     private fun convertTimerModelToTimerEntity(timer: TimerModel) : TimersEntity {
-        return TimersEntity(timer.name, timer.value)
+        return TimersEntity(timer.id, timer.name, timer.value)
     }
 
 }

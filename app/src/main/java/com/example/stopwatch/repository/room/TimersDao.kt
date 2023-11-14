@@ -6,12 +6,12 @@ import androidx.room.*
 @Dao
 interface TimersDao {
     //получить список таймеров
-    @Query("SELECT * FROM HistoryEntity")
+    @Query("SELECT * FROM TimersEntity")
     suspend fun all(): List<TimersEntity>
 
     //получить конкретный таймер
-    @Query("SELECT * FROM HistoryEntity WHERE word LIKE :word")
-    suspend fun getDataByName(word: String): TimersEntity
+    @Query("SELECT * FROM TimersEntity WHERE timerName LIKE :timerName")
+    suspend fun getDataByName(timerName: String): TimersEntity
 
     //Сохранить новый таймер
     //OnConflict = OnConflictStrategy.IGNORE означает, что дубликаты не будут сохраняться

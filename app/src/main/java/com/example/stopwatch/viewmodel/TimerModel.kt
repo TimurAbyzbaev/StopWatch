@@ -8,12 +8,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class TimerModel(
+    var id: Int,
     var name: String = "Timer",
     var value: Long = 0L
 ) : BaseViewModel() {
     init {
         val timestampMillisecondsFormatter = TimestampMillisecondsFormatter()
-        _mutableLiveData.value = timestampMillisecondsFormatter.format(value)
+        _mutableLiveData.postValue(timestampMillisecondsFormatter.format(value))
     }
     private val liveDataForViewToObserve: LiveData<String> = _mutableLiveData
     var started = false
