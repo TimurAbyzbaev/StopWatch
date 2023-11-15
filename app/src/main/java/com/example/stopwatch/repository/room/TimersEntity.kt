@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = arrayOf(Index(value = arrayOf("id"), unique = true)))
+@Entity(indices = arrayOf(Index(value = arrayOf("timerId"), unique = true)))
 class TimersEntity (
     @field:PrimaryKey
-    @field:ColumnInfo(name = "id")
+    @field:ColumnInfo(name = "timerId")
     var id: Int,
 
     @field:ColumnInfo(name = "timerName")

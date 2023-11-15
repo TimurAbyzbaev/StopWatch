@@ -21,14 +21,9 @@ private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cb
 class MainActivity : ScopeActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    //private val adapter = MainActivityAdapter(::setPosition)
     private val adapter: MainActivityAdapter by lazy { MainActivityAdapter(::setPosition) }
     var currentPosition = 0
     lateinit var viewModel: MainActivityViewModel
-//    private val viewModel: MainActivityViewModel by lazy {
-//        ViewModelProvider(this).get(MainActivityViewModel::class.java)
-//    }
-
 
     private fun setPosition(position: Int) {
         currentPosition = position
@@ -41,7 +36,8 @@ class MainActivity : ScopeActivity() {
         initViewModel()
         registerForContextMenu(binding.mainActivityRecyclerview)
         binding.mainActivityRecyclerview.adapter = adapter
-
+        viewModel.startSave = true
+        viewModel.startSave()
     }
 
     private fun initViewModel() {
@@ -87,7 +83,6 @@ class MainActivity : ScopeActivity() {
         if (v?.id == R.id.main_activity_recyclerview) {
             menuInflater.inflate(R.menu.timer_menu, menu)
         }
-
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

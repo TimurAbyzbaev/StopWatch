@@ -16,9 +16,26 @@ import kotlin.random.Random
 class MainActivityViewModel(
     private val repository: Repository<TimerModel>
 ) : ViewModel() {
+    var startSave = false
+
+    fun startSave(){
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                if(startSave){
+                    for (timer in timers) {
+                        if (repository.getTimer(timer.id).value != timer.getElapsedTime()) {
+                            timer.value = timer.getElapsedTime()
+                            updateTimerInDB(timers.indexOf(timer))
+                        }
+                    }
+                }
+                startSave()
+            }
+        }
+    }
 
     private val timers: MutableList<TimerModel> = mutableListOf()
-    suspend fun getTimersFromDB() {
+    private suspend fun getTimersFromDB() {
         val repositoryTimers = repository.getAllTimers()
         if(repositoryTimers.isNotEmpty()) {
             for(timer in repositoryTimers) {
@@ -59,11 +76,15 @@ class MainActivityViewModel(
 
     fun renameTimer(index: Int, newName: String) {
         timers[index].name = newName
+        updateTimerInDB(index)
+        _liveData.postValue(timers)
+    }
+
+    private fun updateTimerInDB(index: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                repository.updateTimerInDB(timers[index])
+                repository.updateTimerInDB(timer = timers[index])
             }
         }
-        _liveData.postValue(timers)
     }
 }

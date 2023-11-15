@@ -26,16 +26,34 @@ class TimerModel(
             return System.currentTimeMillis()
         }
     }
+    private val elapsedTimeCalculator = ElapsedTimeCalculator(timestampProvider)
 
-    private val stopwatchListOrchestrator = StopwatchListOrchestrator(
-        stopwatchStateHolder = StopwatchStateHolder(
-            StopwatchStateCalculator(timestampProvider, ElapsedTimeCalculator(timestampProvider)),
-            ElapsedTimeCalculator(timestampProvider),
-            TimestampMillisecondsFormatter(),
-            value
-        ),
+    private val stopwatchStateHolder = StopwatchStateHolder(
+        StopwatchStateCalculator(timestampProvider, ElapsedTimeCalculator(timestampProvider)),
+        elapsedTimeCalculator,
+        TimestampMillisecondsFormatter(),
+        value)
+
+        private val stopwatchListOrchestrator = StopwatchListOrchestrator(
+        stopwatchStateHolder = stopwatchStateHolder,
         CoroutineScope(Dispatchers.Main + SupervisorJob())
     )
+
+    fun getElapsedTime() : Long {
+        return if(started) {
+            try {
+                elapsedTimeCalculator.calculate(stopwatchStateHolder.currentState as StopwatchState.Running)
+            } catch (e: java.lang.ClassCastException) {
+                value
+            } finally {
+                value
+            }
+
+        } else {
+            value
+        }
+    }
+
 
     fun subscribeToValue(): LiveData<String> {
         return liveDataForViewToObserve

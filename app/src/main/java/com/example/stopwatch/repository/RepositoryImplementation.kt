@@ -5,8 +5,8 @@ import com.example.stopwatch.viewmodel.TimerModel
 
 class RepositoryImplementation(private  val dataSource: DataSource<List<TimerModel>>) :
     Repository<TimerModel> {
-    override suspend fun getTimer(timerName: String): TimerModel {
-        return dataSource.getTimer(timerName)
+    override suspend fun getTimer(timerId: Int): TimerModel {
+        return dataSource.getTimer(timerId)
     }
 
     override suspend fun saveToDB(timer: TimerModel) {

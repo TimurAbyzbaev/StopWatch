@@ -4,7 +4,7 @@ class StopwatchStateHolder(
     private val stopwatchStateCalculator: StopwatchStateCalculator,
     private val elapsedTimeCalculator: ElapsedTimeCalculator,
     private val timestampMillisecondsFormatter: TimestampMillisecondsFormatter,
-    private val elapsedTime: Long = 0L
+    val elapsedTime: Long = 0L
 ) {
     var currentState: StopwatchState = StopwatchState.Paused(elapsedTime)
         private set
