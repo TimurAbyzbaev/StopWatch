@@ -7,9 +7,11 @@ import com.example.stopwatch.viewmodel.TimerModel
 class RoomDatabaseImplementation(private val timersDao: TimersDao) :
     DataSource<List<TimerModel>> {
 
-    override suspend fun getTimer(timerId: Int) : TimerModel {
-        val timerEntity: TimersEntity = timersDao.getTimerById(timerId)
-        return convertTimerEntityToTimerModel(timerEntity)
+    override suspend fun getTimer(timerId: Int) : TimerModel? {
+        val timerEntity: TimersEntity? = timersDao.getTimerById(timerId)
+        if (timerEntity != null) {
+            return convertTimerEntityToTimerModel(timerEntity)
+        } else return null
     }
 
     override suspend fun getAllTimers(): List<TimerModel> {

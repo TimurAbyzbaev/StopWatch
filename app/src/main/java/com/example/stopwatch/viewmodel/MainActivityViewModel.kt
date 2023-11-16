@@ -1,6 +1,9 @@
 package com.example.stopwatch.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.*
+import com.example.stopwatch.application.StopwatchApp
+import com.example.stopwatch.di.koin.application
 import com.example.stopwatch.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,14 +25,15 @@ class MainActivityViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 if(startSave){
-                    for (timer in timers) {
-                        if (repository.getTimer(timer.id).value != timer.getElapsedTime()) {
+                    val timersCopy = timers.toList()
+                    for (timer in timersCopy) {
+                        if (repository.getTimer(timer.id)?.value != timer.getElapsedTime()) {
                             timer.value = timer.getElapsedTime()
                             updateTimerInDB(timers.indexOf(timer))
                         }
                     }
+                    startSave()
                 }
-                startSave()
             }
         }
     }
@@ -83,7 +87,9 @@ class MainActivityViewModel(
     private fun updateTimerInDB(index: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                repository.updateTimerInDB(timer = timers[index])
+                if(timers.size < index){
+                    repository.updateTimerInDB(timer = timers[index])
+                }
             }
         }
     }

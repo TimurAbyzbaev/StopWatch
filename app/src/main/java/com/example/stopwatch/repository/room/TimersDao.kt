@@ -11,7 +11,7 @@ interface TimersDao {
 
     //получить конкретный таймер
     @Query("SELECT * FROM TimersEntity WHERE timerId LIKE :timerId")
-    suspend fun getTimerById(timerId: Int): TimersEntity
+    suspend fun getTimerById(timerId: Int): TimersEntity?
 
     //Сохранить новый таймер
     //OnConflict = OnConflictStrategy.IGNORE означает, что дубликаты не будут сохраняться
