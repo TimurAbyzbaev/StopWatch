@@ -57,13 +57,14 @@ class MainActivityAdapter(
 
             timer.subscribeToValue().observe(context as LifecycleOwner) {
                 timerValueTextView.text = it
+                //timer.notification.updateNotification(it)
             }
             timerNameTextView.text = timer.name
 
             buttonStart.setOnClickListener {
                 if (!timer.started) {
                     for (timer in timers) {
-                        timer.pauseClicked()
+                        pauseTimer(timer)
                         notifyDataSetChanged()
                     }
                     timer.startClicked()
@@ -79,6 +80,18 @@ class MainActivityAdapter(
                 updateImageOnImageButton(buttonStart, timer.started)
             }
         }
+    }
+
+    private fun pauseTimer(timer: TimerModel) {
+        timer.pauseClicked()
+    }
+
+    private fun startTimer(timer: TimerModel) {
+        timer.startClicked()
+    }
+
+    private fun stopTimer(timer: TimerModel) {
+        timer.stopClicked()
     }
 
     private fun updateImageOnImageButton(button: ImageButton, started: Boolean) {

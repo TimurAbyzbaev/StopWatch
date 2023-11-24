@@ -1,6 +1,7 @@
 package com.example.stopwatch.application
 
 import android.app.Application
+import android.content.Context
 import com.example.stopwatch.di.koin.application
 import com.example.stopwatch.di.koin.mainScreen
 import org.koin.android.ext.koin.androidContext

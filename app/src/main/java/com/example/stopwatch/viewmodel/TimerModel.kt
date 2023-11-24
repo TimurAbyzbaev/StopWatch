@@ -1,11 +1,16 @@
 package com.example.stopwatch.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
+import com.example.stopwatch.di.koin.application
 import com.example.stopwatch.model.*
+import com.example.stopwatch.view.CurrentTimerNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
 class TimerModel(
     var id: Int,
@@ -16,6 +21,8 @@ class TimerModel(
         val timestampMillisecondsFormatter = TimestampMillisecondsFormatter()
         _mutableLiveData.postValue(timestampMillisecondsFormatter.format(value))
     }
+    private val notification by inject<CurrentTimerNotification>(CurrentTimerNotification::class.java)
+
     private val liveDataForViewToObserve: LiveData<String> = _mutableLiveData
     var started = false
         private set
@@ -67,18 +74,25 @@ class TimerModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun startClicked() {
         stopwatchListOrchestrator.start()
         started = true
+        notification.setCurrentTimer(this)
+        notification.createNotification()
     }
 
     fun pauseClicked() {
         stopwatchListOrchestrator.pause()
         started = false
+        notification.notificationActive = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun stopClicked() {
         stopwatchListOrchestrator.stop()
         started = false
+        notification.cancelNotification()
+        notification.notificationActive = false
     }
 }
